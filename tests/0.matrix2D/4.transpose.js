@@ -1,12 +1,12 @@
 import should from "should";
-import UInt8Matrix2D from "../../src/matrix/UInt8Matrix2D";
+import Int8Matrix2D from "../../src/matrix/Int8Matrix2D";
 
-describe("UInt8Matrix2D", function(){
+describe("Int8Matrix2D", function(){
 
     describe("Transpose", function(){
 
         var data = new Int8Array([0, 1, 2, 3, 4, 5]),
-            m = new UInt8Matrix2D(2, 3, data);
+            m = new Int8Matrix2D(2, 3, data);
 
         m.transpose();
 
@@ -32,7 +32,7 @@ describe("UInt8Matrix2D", function(){
     describe("Transpose and duplicate", function(){
 
         var data = new Int8Array([0, 1, 2, 3, 4, 5]),
-            m1 = new UInt8Matrix2D(2, 3, data);
+            m1 = new Int8Matrix2D(2, 3, data);
 
         m1.transpose();
 

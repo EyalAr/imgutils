@@ -6,22 +6,29 @@ import _flipX from "./utils/flipX";
 import _flipY from "./utils/flipY";
 import _convolve from "./utils/convolve";
 
-class UInt8Matrix2D{
+class Int8Matrix2D{
     constructor(width, height, data){
         this._width = width;
         this._height = height;
-        this._data = data || new Uint8Array(this._width * this._height);
+        this._data = data || new Int8Array(this._width * this._height);
         this._transposed = false;
     }
 
     duplicate(){
-        var dup = new UInt8Matrix2D(
+        var dup = new Int8Matrix2D(
             this._width,
             this._height,
-            new Uint8Array(this._data)
+            new Int8Array(this._data)
         );
         if (this._transposed) dup.transpose();
         return dup;
+    }
+
+    copy(other){
+        this._data = new Int8Array(other._data);
+        this._width = other._width;
+        this._height = other._height;
+        this._transposed = other._transposed;
     }
 
     equals(other){
@@ -93,4 +100,4 @@ function toOffset(width, x, y){
     return y * width + x;
 }
 
-export default UInt8Matrix2D;
+export default Int8Matrix2D;

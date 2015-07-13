@@ -1,12 +1,12 @@
 import should from "should";
-import UInt8Matrix2D from "../../src/matrix/UInt8Matrix2D";
+import Int8Matrix2D from "../../src/matrix/Int8Matrix2D";
 
-describe("UInt8Matrix2D", function(){
+describe("Int8Matrix2D", function(){
 
     describe("FlipX", function(){
 
         var data = new Int8Array([1, 2, 3, 4]),
-            m = new UInt8Matrix2D(2, 2, data);
+            m = new Int8Matrix2D(2, 2, data);
 
         m.flipX();
 
@@ -27,7 +27,7 @@ describe("UInt8Matrix2D", function(){
     describe("FlipY", function(){
 
         var data = new Int8Array([1, 2, 3, 4]),
-            m = new UInt8Matrix2D(2, 2, data);
+            m = new Int8Matrix2D(2, 2, data);
 
         m.flipY();
 
