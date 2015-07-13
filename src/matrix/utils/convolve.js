@@ -12,7 +12,7 @@ function convolve(matrix, kernel, method = "zero"){
     if (!kernel.isSymmetric())
         kernel = kernel.flipX().flipY();
 
-    var method = method.toLowerCase();
+    method = method.toLowerCase();
     if (method === "zero") method = ZERO_METHOD;
     else if (method === "wrap") method = WRAP_METHOD;
     else if (method === "extend") method = EXTEND_METHOD;
