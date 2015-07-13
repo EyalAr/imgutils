@@ -1,5 +1,7 @@
 /* jshint esnext:true */
 
+import _isSquare from "./utils/isSquare";
+import _isSymmetric from "./utils/isSymmetric";
 import _flipX from "./utils/flipX";
 import _flipY from "./utils/flipY";
 import _convolve from "./utils/convolve";
@@ -61,6 +63,14 @@ class UInt8Matrix2D{
 
     getHeight(){
         return this._transposed ? this._width : this._height;
+    }
+
+    isSquare(){
+        return _isSquare(this);
+    }
+
+    isSymmetric(){
+        return _isSymmetric(this);
     }
 
     flipX(){
