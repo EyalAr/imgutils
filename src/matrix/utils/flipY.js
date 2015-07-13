@@ -16,4 +16,4 @@ function flipCol(matrix, col){
     }
 }
 
-export default flipX;
+export default flipY;

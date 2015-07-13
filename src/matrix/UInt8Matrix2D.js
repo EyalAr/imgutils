@@ -1,37 +1,39 @@
 /* jshint esnext:true */
 
-import UInt8Matrix from "./UInt8Matrix";
 import { flipX as _flipX } from "./utils/flipX";
 import { flipY as _flipY } from "./utils/flipY";
 import { convolve as _convolve } from "./utils/convolve";
 
-class UInt8Matrix2D extends UInt8Matrix{
+class UInt8Matrix2D{
     constructor(width, height, data){
-        super([width, height], data);
+        this._width = width;
+        this._height = height;
+        this._data = data || new Uint8Array(this._width * this._height);
     }
 
     duplicate(){
         return new UInt8Matrix2D(
-            this.getWidth(),
-            this.getHeight(),
-            this._data.slice(0)
+            this._width,
+            this._height,
+            new Uint8Array(this._data)
         );
     }
 
     get(x, y){
-        return super.getVal([x, y]);
+        return this._data[toOffset(this._width, x, y)];
     }
 
     set(x, y, v){
-        return super.setVal([x, y], v);
+        this._data[toOffset(this._width, x, y)] = v;
+        return this;
     }
 
     getWidth(){
-        return super.getDim(0);
+        return this._width;
     }
 
     getHeight(){
-        return super.getDim(1);
+        return this._height;
     }
 
     flipX(){
@@ -50,4 +52,8 @@ class UInt8Matrix2D extends UInt8Matrix{
     }
 }
 
-export default Matrix;
+function toOffset(width, x, y){
+    return y * width + x;
+}
+
+export default UInt8Matrix2D;
