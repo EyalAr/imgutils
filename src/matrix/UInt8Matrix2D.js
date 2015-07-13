@@ -1,8 +1,8 @@
 /* jshint esnext:true */
 
-import { flipX as _flipX } from "./utils/flipX";
-import { flipY as _flipY } from "./utils/flipY";
-import { convolve as _convolve } from "./utils/convolve";
+import _flipX from "./utils/flipX";
+import _flipY from "./utils/flipY";
+import _convolve from "./utils/convolve";
 
 class UInt8Matrix2D{
     constructor(width, height, data){
