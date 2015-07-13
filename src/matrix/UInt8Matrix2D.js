@@ -9,31 +9,58 @@ class UInt8Matrix2D{
         this._width = width;
         this._height = height;
         this._data = data || new Uint8Array(this._width * this._height);
+        this._transposed = false;
     }
 
     duplicate(){
-        return new UInt8Matrix2D(
+        var dup = new UInt8Matrix2D(
             this._width,
             this._height,
             new Uint8Array(this._data)
         );
+        if (this._transposed) dup.transpose();
+        return dup;
+    }
+
+    equals(other){
+        if (other.getWidth() !== this.getWidth()) return false;
+        if (other.getHeight() !== this.getHeight()) return false;
+        for (let x = 0 ; x < this.getWidth() ; x++) {
+            for (let y = 0 ; y < this.getHeight() ; y++) {
+                if (this.get(x, y) !== other.get(x, y)) return false;
+            }
+        }
+        return true;
+    }
+
+    transpose(){
+        this._transposed = !this._transposed;
+        return this;
     }
 
     get(x, y){
-        return this._data[toOffset(this._width, x, y)];
+        return this._data[toOffset(
+            this._width,
+            this._transposed ? y : x,
+            this._transposed ? x : y
+        )];
     }
 
     set(x, y, v){
-        this._data[toOffset(this._width, x, y)] = v;
+        this._data[toOffset(
+            this._width,
+            this._transposed ? y : x,
+            this._transposed ? x : y
+        )] = v;
         return this;
     }
 
     getWidth(){
-        return this._width;
+        return this._transposed ? this._height : this._width;
     }
 
     getHeight(){
-        return this._height;
+        return this._transposed ? this._width : this._height;
     }
 
     flipX(){
