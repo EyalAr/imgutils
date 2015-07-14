@@ -1,5 +1,7 @@
 /* jshint esnext:true */
 
+import Int8Matrix2D from "../Int8Matrix2D";
+
 var ZERO_METHOD   = 0,
     WRAP_METHOD   = 1,
     EXTEND_METHOD = 2;
@@ -10,7 +12,7 @@ function convolve(matrix, kernel, method = "zero"){
     if (kernel.getWidth % 2 === 0)
         throw Error("Convolution kernel must have an odd length");
     if (!kernel.isSymmetric())
-        kernel = kernel.flipX().flipY();
+        kernel.flipX().flipY();
 
     method = method.toLowerCase();
     if (method === "zero") method = ZERO_METHOD;
@@ -18,16 +20,18 @@ function convolve(matrix, kernel, method = "zero"){
     else if (method === "extend") method = EXTEND_METHOD;
     else throw  Error("Unknown convolution edge handling method");
 
-    var tmp = matrix.duplicate();
+    var width = matrix.getWidth(),
+        height = matrix.getHeight(),
+        tmp = new Int8Matrix2D(width, height);
 
-    for (let x = 0 ; x < matrix.getWidth() ; x++) {
-        for (let y = 0 ; y < matrix.getHeight() ; y++) {
-            var v = 0,
-                dx = (matrix.getWidth() - 1) / 2,
-                dy = (matrix.getHeight() - 1) / 2;
+    for (let x = 0 ; x < width ; x++) {
+        for (let y = 0 ; y < height ; y++) {
+            let v = 0,
+                dx = (width - 1) / 2,
+                dy = (height - 1) / 2;
             for (let kx = -dx ; kx <= dx ; kx++) {
                 for (let ky = -dy ; ky <= dy ; ky++) {
-                    var m = get(matrix, x + kx, y + ky, method),
+                    let m = get(matrix, x + kx, y + ky, method),
                         k = kernel.get(kx + dx, ky + dy);
                     v += m * k;
                 }
