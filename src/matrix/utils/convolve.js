@@ -2,9 +2,9 @@
 
 import Int8Matrix2D from "../Int8Matrix2D";
 
-var ZERO_METHOD   = 0,
-    WRAP_METHOD   = 1,
-    EXTEND_METHOD = 2;
+const ZERO_METHOD   = 0;
+const WRAP_METHOD   = 1;
+const EXTEND_METHOD = 2;
 
 function convolve(matrix, kernel, method = "zero"){
     if (!kernel.isSquare())
@@ -20,20 +20,23 @@ function convolve(matrix, kernel, method = "zero"){
     else if (method === "extend") method = EXTEND_METHOD;
     else throw  Error("Unknown convolution edge handling method");
 
-    var width = matrix.getWidth(),
-        height = matrix.getHeight(),
-        tmp = new Int8Matrix2D(width, height);
+    const mWidth = matrix.getWidth();
+    const mHeight = matrix.getHeight();
+    const kWidth = kernel.getWidth();
+    const kHeight = kernel.getHeight();
+    const rx = (kWidth - 1) / 2;
+    const ry = (kHeight - 1) / 2;
 
-    for (let x = 0 ; x < width ; x++) {
-        for (let y = 0 ; y < height ; y++) {
-            let v = 0,
-                dx = (width - 1) / 2,
-                dy = (height - 1) / 2;
-            for (let kx = -dx ; kx <= dx ; kx++) {
-                for (let ky = -dy ; ky <= dy ; ky++) {
-                    let m = get(matrix, x + kx, y + ky, method),
-                        k = kernel.get(kx + dx, ky + dy);
-                    v += m * k;
+    var tmp = new Int8Matrix2D(mWidth, mHeight);
+
+    for (let x = 0 ; x < mWidth ; x++) {
+        for (let y = 0 ; y < mHeight ; y++) {
+            let v = 0;
+            for (let dx = -rx ; dx <= rx ; dx++) {
+                for (let dy = -ry ; dy <= ry ; dy++) {
+                    let mv = get(matrix, x + dx, y + dy, method),
+                        kv = kernel.get(dx + rx, dy + ry);
+                    v += mv * kv;
                 }
             }
             tmp.set(x, y, v);
@@ -44,8 +47,8 @@ function convolve(matrix, kernel, method = "zero"){
 }
 
 function get(matrix, x, y, method){
-    var width = matrix.getWidth(),
-        height = matrix.getHeight();
+    const width = matrix.getWidth();
+    const height = matrix.getHeight();
 
     if (x >= 0 && y >= 0 && x < width && y < height){
         return matrix.get(x, y);
