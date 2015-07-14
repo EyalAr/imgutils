@@ -12,8 +12,17 @@ function paste(target, source, x, y){
     if (x + sWidth > tWidth || y + sHeight > tHeight)
         throw Error("Source exceeds bounds of target");
 
-    const offset = y * tWidth + x;
-    target._data.set(source._data, offset);
+    var tOffset = y * tWidth + x,
+        sOffset = 0;
+
+    for (let row = 0 ; row < sHeight ; row++) {
+        target._data.set(
+            source._data.subarray(sOffset, sOffset + sWidth),
+            tOffset
+        );
+        sOffset += sWidth;
+        tOffset += tWidth;
+    }
 }
 
 export default paste;

@@ -5,6 +5,7 @@ import _isSymmetric from "./utils/isSymmetric";
 import _flipX from "./utils/flipX";
 import _flipY from "./utils/flipY";
 import _convolve from "./utils/convolve";
+import _paste from "./utils/paste";
 
 /**
  * This class represents a 2D matrix of 8-bit integers.
@@ -166,6 +167,18 @@ class Int8Matrix2D{
      */
     convolve(kernel){
         _convolve(this, kernel);
+        return this;
+    }
+
+    /**
+     * Paste another matrix on top of the current one.
+     * @param  {Int8Matrix2D} other
+     * @param  {Integer} x
+     * @param  {Integer} y
+     * @return {Int8Matrix2D} The current matrix.
+     */
+    paste(other, x, y){
+        _paste(this, other, x, y);
         return this;
     }
 }
