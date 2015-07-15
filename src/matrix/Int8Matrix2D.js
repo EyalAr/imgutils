@@ -6,6 +6,7 @@ import _flipX from "./utils/flipX";
 import _flipY from "./utils/flipY";
 import _convolve from "./utils/convolve";
 import _paste from "./utils/paste";
+import _extract from "./utils/extract";
 
 /**
  * This class represents a 2D matrix of 8-bit integers.
@@ -180,6 +181,18 @@ class Int8Matrix2D{
     paste(other, x, y){
         _paste(this, other, x, y);
         return this;
+    }
+
+    /**
+     * Extract a new matrix from a rectangular portion of the current matrix
+     * @param  {Integer} x1
+     * @param  {Integer} y1
+     * @param  {Integer} x2
+     * @param  {Integer} y2
+     * @return {Int8Matrix2D} The extracted matrix.
+     */
+    extract(x1, y1, x2, y2){
+        return _extract(this, x1, y1, x2, y2);
     }
 }
 
