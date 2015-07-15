@@ -5,8 +5,11 @@ describe("Int8Matrix2D", function(){
 
     describe("Transpose", function(){
 
-        var data = new Int8Array([0, 1, 2, 3, 4, 5]),
-            m = new Int8Matrix2D(2, 3, data);
+        var m = new Int8Matrix2D(2, 3, new Int8Array([
+            0, 1,
+            2, 3,
+            4, 5
+        ]));
 
         m.transpose();
 
@@ -31,12 +34,15 @@ describe("Int8Matrix2D", function(){
 
     describe("Transpose and duplicate", function(){
 
-        var data = new Int8Array([0, 1, 2, 3, 4, 5]),
-            m1 = new Int8Matrix2D(2, 3, data);
+        var m1 = new Int8Matrix2D(2, 3, new Int8Array([
+            0, 1,
+            2, 3,
+            4, 5
+        ]));
 
         m1.transpose();
 
-        var m2 = m1.duplicate();
+        const m2 = m1.duplicate();
 
         // 0 2 4
         // 1 3 5

@@ -13,13 +13,13 @@ describe("Int8Matrix2D", function(){
             1, 2, 3, 4, 5,
         ]));
 
-        var expected = new Int8Matrix2D(3, 3, new Int8Array([
+        const expected = new Int8Matrix2D(3, 3, new Int8Array([
             2, 3, 4,
             2, 9, 4,
             2, 3, 4,
         ]));
 
-        var actual = m.extract(1, 2, 4, 5);
+        const actual = m.extract(1, 2, 4, 5);
 
         it("should have correct data", function(){
             should(actual.equals(expected)).be.ok();

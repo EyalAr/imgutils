@@ -5,10 +5,15 @@ describe("Int8Matrix2D", function(){
 
     describe("Is Symmetric", function(){
 
-        var data1 = new Int8Array([0, 1, 1, 0]),
-            data2 = new Int8Array([0, 1, 0, 1]),
-            m1 = new Int8Matrix2D(2, 2, data1),
-            m2 = new Int8Matrix2D(2, 2, data2);
+        const m1 = new Int8Matrix2D(2, 2, new Int8Array([
+            0, 1,
+            1, 0
+        ]));
+
+        const m2 = new Int8Matrix2D(2, 2, new Int8Array([
+            0, 1,
+            0, 1
+        ]));
 
         it("should be symmetric", function(){
             should(m1.isSymmetric()).be.ok();

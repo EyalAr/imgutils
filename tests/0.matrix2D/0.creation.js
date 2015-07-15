@@ -5,8 +5,10 @@ describe("Int8Matrix2D", function(){
 
     describe("Constructor", function(){
 
-        var data = new Int8Array([1, 2, 3, 4]),
-            m = new Int8Matrix2D(2, 2, data);
+        const m = new Int8Matrix2D(2, 2, new Int8Array([
+            1, 2,
+            3, 4
+        ]));
 
         it("should create matrix with correct dimensions", function(){
             should(m.getWidth()).equal(2);
@@ -24,9 +26,12 @@ describe("Int8Matrix2D", function(){
 
     describe("Duplicate", function(){
 
-        var data = new Int8Array([1, 2, 3, 4]),
-            m1 = new Int8Matrix2D(2, 2, data),
-            m2 = m1.duplicate();
+        var m1 = new Int8Matrix2D(2, 2, new Int8Array([
+            1, 2,
+            3, 4
+        ]));
+
+        const m2 = m1.duplicate();
 
         it("should create matrix with correct dimensions", function(){
             should(m2.getWidth()).equal(2);

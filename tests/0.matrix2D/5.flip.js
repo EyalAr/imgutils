@@ -5,8 +5,10 @@ describe("Int8Matrix2D", function(){
 
     describe("FlipX", function(){
 
-        var data = new Int8Array([1, 2, 3, 4]),
-            m = new Int8Matrix2D(2, 2, data);
+        var m = new Int8Matrix2D(2, 2, new Int8Array([
+            1, 2,
+            3, 4
+        ]));
 
         m.flipX();
 
@@ -26,8 +28,10 @@ describe("Int8Matrix2D", function(){
 
     describe("FlipY", function(){
 
-        var data = new Int8Array([1, 2, 3, 4]),
-            m = new Int8Matrix2D(2, 2, data);
+        var m = new Int8Matrix2D(2, 2, new Int8Array([
+            1, 2,
+            3, 4
+        ]));
 
         m.flipY();
 

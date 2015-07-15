@@ -5,9 +5,14 @@ describe("Int8Matrix2D", function(){
 
     describe("Is Square", function(){
 
-        var data = new Int8Array([0, 1, 2, 3]),
-            m1 = new Int8Matrix2D(2, 2, data),
-            m2 = new Int8Matrix2D(1, 4, data);
+        const m1 = new Int8Matrix2D(2, 2, new Int8Array([
+            0, 1,
+            2, 3
+        ]));
+
+        const m2 = new Int8Matrix2D(1, 4, new Int8Array([
+            0, 1, 2, 3
+        ]));
 
         it("should be square", function(){
             should(m1.isSquare()).be.ok();

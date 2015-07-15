@@ -1,11 +1,7 @@
 /* jshint esnext:true */
 
-import _isSquare from "./utils/isSquare";
-import _isSymmetric from "./utils/isSymmetric";
-import _flipX from "./utils/flipX";
-import _flipY from "./utils/flipY";
+import _transpose from "./utils/transpose";
 import _convolve from "./utils/convolve";
-import _paste from "./utils/paste";
 import _extract from "./utils/extract";
 
 /**
@@ -24,7 +20,6 @@ class Int8Matrix2D{
         this._width = width;
         this._height = height;
         this._data = data || new Int8Array(this._width * this._height);
-        this._transposed = false;
     }
 
     /**
@@ -33,25 +28,23 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D}
      */
     duplicate(){
-        var dup = new Int8Matrix2D(
+        return new Int8Matrix2D(
             this._width,
             this._height,
             new Int8Array(this._data)
         );
-        if (this._transposed) dup.transpose();
-        return dup;
     }
 
     /**
-     * Copy another matrix into this one. Data is duplicated.
+     * Replace the contents of this matrix with another matrix.
+     * Data from the other matrix is duplicated.
      * @param  {Int8Matrix2D} other The other matrix to copy.
      * @return {Int8Matrix2D} The current matrix.
      */
-    copy(other){
+    replace(other){
         this._data = new Int8Array(other._data);
-        this._width = other._width;
-        this._height = other._height;
-        this._transposed = other._transposed;
+        this._width = other.getWidth();
+        this._height = other.getHeight();
         return this;
     }
 
@@ -76,8 +69,8 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     transpose(){
-        this._transposed = !this._transposed;
-        return this;
+        const n = _transpose(this);
+        return this.replace(n);
     }
 
     /**
@@ -87,11 +80,7 @@ class Int8Matrix2D{
      * @return {Integer}
      */
     get(x, y){
-        return this._data[toOffset(
-            this._width,
-            this._transposed ? y : x,
-            this._transposed ? x : y
-        )];
+        return this._data[toOffset(this.getWidth(), x, y)];
     }
 
     /**
@@ -102,11 +91,7 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     set(x, y, v){
-        this._data[toOffset(
-            this._width,
-            this._transposed ? y : x,
-            this._transposed ? x : y
-        )] = v;
+        this._data[toOffset(this.getWidth(), x, y)] = v;
         return this;
     }
 
@@ -115,7 +100,7 @@ class Int8Matrix2D{
      * @return {Integer}
      */
     getWidth(){
-        return this._transposed ? this._height : this._width;
+        return this._width;
     }
 
     /**
@@ -123,7 +108,7 @@ class Int8Matrix2D{
      * @return {Integer}
      */
     getHeight(){
-        return this._transposed ? this._width : this._height;
+        return this._height;
     }
 
     /**
@@ -131,7 +116,7 @@ class Int8Matrix2D{
      * @return {Boolean} True if square, false otherwise.
      */
     isSquare(){
-        return _isSquare(this);
+        return this.getWidth() === this.getHeight();
     }
 
     /**
@@ -139,7 +124,7 @@ class Int8Matrix2D{
      * @return {Boolean} True if symmetric, false otherwise.
      */
     isSymmetric(){
-        return _isSymmetric(this);
+        return this.isSquare() && this.duplicate().transpose().equals(this);
     }
 
     /**
@@ -147,7 +132,18 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     flipX(){
-        _flipX(this);
+        // strategy: go row by row and switch pairs of cells.
+        // in flipY the strategy is more efficient. see comments there.
+        const height = this.getHeight();
+        const lastInRow = this.getWidth() - 1;
+        for (let y = 0 ; y < height ; y++) {
+            for (let x = 0 ; x < lastInRow / 2 ; x++) {
+                let left = this.get(x, y),
+                    right = this.get(lastInRow - x, y);
+                this.set(x, y, right);
+                this.set(lastInRow - x, y, left);
+            }
+        }
         return this;
     }
 
@@ -156,7 +152,42 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     flipY(){
-        _flipY(this);
+        // strategy: switch whole sections in _data array which correspong
+        // to pairs of rows.
+        // the cells of the matrix are layed down in the _data array row by row.
+        const width = this.getWidth();
+        const lastRow = this.getHeight() - 1;
+
+        let firstInTopRow = 0,
+            lastInTopRow = width,
+            firstInBottomRow = lastRow * width,
+            lastInBottomRow = firstInBottomRow + width;
+
+        for (let topRow = 0 ; topRow < lastRow / 2 ; topRow++) {
+            // we need to create a copy of the first row since we later
+            // override the row in the original data array
+            let topRowData = new Int8Array(
+                this._data.buffer.slice(
+                    firstInTopRow, lastInTopRow
+                )
+            );
+
+            // it's enough to create a new Int8Array on the same underlying
+            // buffer for the second row, since we override it only after
+            // overriding the first row
+            let bottomRowData = this._data.subarray(
+                firstInBottomRow, lastInBottomRow
+            );
+
+            this._data.set(bottomRowData, firstInTopRow);
+            this._data.set(topRowData, firstInBottomRow);
+
+            firstInTopRow += width;
+            lastInTopRow += width;
+            firstInBottomRow -= width;
+            lastInBottomRow -= width;
+        }
+
         return this;
     }
 
@@ -167,8 +198,8 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     convolve(kernel){
-        _convolve(this, kernel);
-        return this;
+        const n = _convolve(this, kernel);
+        return this.replace(n);
     }
 
     /**
@@ -179,7 +210,29 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     paste(other, x, y){
-        _paste(this, other, x, y);
+        const tWidth = this.getWidth();
+        const tHeight = this.getHeight();
+        const sWidth = other.getWidth();
+        const sHeight = other.getHeight();
+
+        if (x < 0 || y < 0)
+            throw Error("Coordinates cannot be negative");
+
+        if (x + sWidth > tWidth || y + sHeight > tHeight)
+            throw Error("Source exceeds bounds of target");
+
+        var tOffset = y * tWidth + x,
+            sOffset = 0;
+
+        for (let row = 0 ; row < sHeight ; row++) {
+            this._data.set(
+                other._data.subarray(sOffset, sOffset + sWidth),
+                tOffset
+            );
+            sOffset += sWidth;
+            tOffset += tWidth;
+        }
+
         return this;
     }
 
@@ -193,6 +246,11 @@ class Int8Matrix2D{
      */
     extract(x1, y1, x2, y2){
         return _extract(this, x1, y1, x2, y2);
+    }
+
+    crop(x1, y1, x2, y2){
+        const n = this.extract(x1, y1, x2, y2);
+        return this.replace(n);
     }
 }
 

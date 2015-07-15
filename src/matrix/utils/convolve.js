@@ -27,7 +27,7 @@ function convolve(matrix, kernel, method = "zero"){
     const rx = (kWidth - 1) / 2;
     const ry = (kHeight - 1) / 2;
 
-    var tmp = new Int8Matrix2D(mWidth, mHeight);
+    var res = new Int8Matrix2D(mWidth, mHeight);
 
     for (let x = 0 ; x < mWidth ; x++) {
         for (let y = 0 ; y < mHeight ; y++) {
@@ -39,11 +39,11 @@ function convolve(matrix, kernel, method = "zero"){
                     v += mv * kv;
                 }
             }
-            tmp.set(x, y, v);
+            res.set(x, y, v);
         }
     }
 
-    matrix.copy(tmp);
+    return res;
 }
 
 function get(matrix, x, y, method){

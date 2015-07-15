@@ -19,7 +19,7 @@ describe("Int8Matrix2D", function(){
             0, 0, 0,
         ]));
 
-        var expected = new Int8Matrix2D(5, 5, new Int8Array([
+        const expected = new Int8Matrix2D(5, 5, new Int8Array([
             1, 2, 3, 4, 5,
             1, 0, 0, 0, 5,
             1, 0, 0, 0, 5,
