@@ -195,10 +195,11 @@ class Int8Matrix2D{
      * Convolve this matrix with a kernel.
      * @param  {Int8Matrix2D} kernel A square matrix with an odd length as the
      * kernel of the convolution.
+     * @param  {String} method Edge handling method. "zero", "wrap" or "extend".
      * @return {Int8Matrix2D} The current matrix.
      */
-    convolve(kernel){
-        const n = _convolve(this, kernel);
+    convolve(kernel, method = "zero"){
+        const n = _convolve(this, kernel, method);
         return this.replace(n);
     }
 
