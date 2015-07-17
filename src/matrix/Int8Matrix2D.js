@@ -250,16 +250,34 @@ class Int8Matrix2D{
         return _extract(this, x1, y1, x2, y2);
     }
 
+    /**
+     * Crop a rectangular portion of the current matrix
+     * @param  {Integer} x1
+     * @param  {Integer} y1
+     * @param  {Integer} x2
+     * @param  {Integer} y2
+     * @return {Int8Matrix2D} The current matrix.
+     */
     crop(x1, y1, x2, y2){
         const n = this.extract(x1, y1, x2, y2);
         return this.replace(n);
     }
 
+    /**
+     * Calculate the dot product of this matrix with another matrix.
+     * @param  {Int8Matrix2D} other
+     * @return {Int8Matrix2D} The current matrix.
+     */
     dot(other){
         const n = _dot(this, other);
         return this.replace(n);
     }
 
+    /**
+     * Calculate the sum of this matrix with another matrix.
+     * @param  {Int8Matrix2D} other
+     * @return {Int8Matrix2D} The current matrix.
+     */
     plus(other){
         if (other.getWidth() !== this.getWidth() ||
             other.getHeight() !== this.getHeight())
@@ -272,6 +290,11 @@ class Int8Matrix2D{
         return this;
     }
 
+    /**
+     * Calculate the difference of this matrix with another matrix.
+     * @param  {Int8Matrix2D} other
+     * @return {Int8Matrix2D} The current matrix.
+     */
     minus(other){
         if (other.getWidth() !== this.getWidth() ||
             other.getHeight() !== this.getHeight())
