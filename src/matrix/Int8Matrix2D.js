@@ -3,6 +3,7 @@
 import _transpose from "./utils/transpose";
 import _convolve from "./utils/convolve";
 import _extract from "./utils/extract";
+import _dot from "./utils/dot";
 
 /**
  * This class represents a 2D matrix of 8-bit integers.
@@ -252,6 +253,35 @@ class Int8Matrix2D{
     crop(x1, y1, x2, y2){
         const n = this.extract(x1, y1, x2, y2);
         return this.replace(n);
+    }
+
+    dot(other){
+        const n = _dot(this, other);
+        return this.replace(n);
+    }
+
+    plus(other){
+        if (other.getWidth() !== this.getWidth() ||
+            other.getHeight() !== this.getHeight())
+            throw Error("Other matrix must be of identical size");
+        for (let x = 0 ; x < this.getWidth() ; x++){
+            for (let y = 0 ; y < this.getHeight() ; y++){
+                this.set(x, y, this.get(x, y) + other.get(x, y));
+            }
+        }
+        return this;
+    }
+
+    minus(other){
+        if (other.getWidth() !== this.getWidth() ||
+            other.getHeight() !== this.getHeight())
+            throw Error("Other matrix must be of identical size");
+        for (let x = 0 ; x < this.getWidth() ; x++){
+            for (let y = 0 ; y < this.getHeight() ; y++){
+                this.set(x, y, this.get(x, y) - other.get(x, y));
+            }
+        }
+        return this;
     }
 }
 
