@@ -4,6 +4,8 @@ import _transpose from "./utils/transpose";
 import _convolve from "./utils/convolve";
 import _extract from "./utils/extract";
 import _dot from "./utils/dot";
+import _rotate90 from "./utils/rotate90";
+import _rotate270 from "./utils/rotate270";
 
 /**
  * This class represents a 2D matrix of 8-bit integers.
@@ -81,7 +83,11 @@ class Int8Matrix2D{
      * @return {Integer}
      */
     get(x, y){
-        return this._data[toOffset(this.getWidth(), x, y)];
+        const width = this.getWidth();
+        const height = this.getHeight();
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            throw Error("Coordinates exceed matrix dimensions");
+        return this._data[toOffset(width, x, y)];
     }
 
     /**
@@ -92,7 +98,11 @@ class Int8Matrix2D{
      * @return {Int8Matrix2D} The current matrix.
      */
     set(x, y, v){
-        this._data[toOffset(this.getWidth(), x, y)] = v;
+        const width = this.getWidth();
+        const height = this.getHeight();
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            throw Error("Coordinates exceed matrix dimensions");
+        this._data[toOffset(width, x, y)] = v;
         return this;
     }
 
@@ -305,6 +315,20 @@ class Int8Matrix2D{
             }
         }
         return this;
+    }
+
+    rotate180(){
+        return this.flipX().flipY();
+    }
+
+    rotate90(){
+        const n = _rotate90(this);
+        return this.replace(n);
+    }
+
+    rotate270(){
+        const n = _rotate270(this);
+        return this.replace(n);
     }
 }
 
